@@ -1,7 +1,7 @@
 <template>
   <div>
     GreatGrandchild
-    <v-btn :loading="loading" @click="onClick">
+    <v-btn :loading="loadingState.isLoading" @click="onClick">
       click
     </v-btn>
   </div>
@@ -9,16 +9,17 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { useLoadingContext } from '../contexts/LoadingContextV3'
 export default Vue.extend({
-  props: {
-    loading: {
-      type: Boolean,
-      default: false
+  setup (_, context) {
+    const loadingState = useLoadingContext()
+    const onClick = (e: unknown) => {
+      loadingState.isLoading = true
+      context.emit('click', e)
     }
-  },
-  methods: {
-    onClick (e: unknown) {
-      this.$emit('click', e)
+    return {
+      loadingState,
+      onClick
     }
   }
 })
