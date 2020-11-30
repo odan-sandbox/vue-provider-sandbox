@@ -1,24 +1,28 @@
 <template>
   <div>
     Grandchild
-    <GreatGrandchild :loading="LoadingContext.isLoading" @click="onClick" />
+    <GreatGrandchild :loading="loadingState.isLoading" @click="onClick" />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { loadingContextKey } from '../contexts/LoadingContext'
+import { useLoadingContext } from '../contexts/LoadingContextV3'
 import GreatGrandchild from './GreatGrandchild.vue'
 
 export default Vue.extend({
-  inject: [loadingContextKey],
   components: {
     GreatGrandchild
   },
-  methods: {
-    onClick (e: unknown) {
-      (this as any).LoadingContext.isLoading = true
-      this.$emit('click', e)
+  setup (_, context) {
+    const loadingState = useLoadingContext()
+    const onClick = (e: unknown) => {
+      loadingState.isLoading = true
+      context.emit('click', e)
+    }
+    return {
+      loadingState,
+      onClick
     }
   }
 })
